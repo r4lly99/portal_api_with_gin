@@ -32,6 +32,8 @@ func main() {
 		user := new(controllers.UserController)
 		// Create the signup endpoint
 		v1.POST("/signup", user.Signup)
+		// Create the login endpoint
+		v1.POST("/login", user.Login)
 	}
 
 	// Handle error response when a route is not defined
