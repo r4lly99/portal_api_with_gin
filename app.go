@@ -10,6 +10,7 @@ import (
 	"github.com/joho/godotenv"
 	// Import our app controllers
 	"portal_api_with_gin/controllers"
+	"portal_api_with_gin/middlewares"
 )
 
 // init gets called before the main function
@@ -34,6 +35,17 @@ func main() {
 		v1.POST("/signup", user.Signup)
 		// Create the login endpoint
 		v1.POST("/login", user.Login)
+
+		movies := v1.Group("/movies")
+
+		// Define the movies controller
+		link := new(controllers.MoviesController)
+		movies.Use(middlewares.Authenticate())
+
+		{
+			movies.GET("/all", link.FetchMovies)
+			movies.POST("/create", link.CreateMovies)
+		}
 	}
 
 	// Handle error response when a route is not defined

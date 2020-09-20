@@ -7,9 +7,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-const (
-	//COLLECTION name
-	COLLECTION = "user"
+var (
+	//user collection name
+	usercollection = "user"
 )
 
 // User defines user object structure
@@ -27,7 +27,7 @@ type UserModel struct{}
 // Signup handles registering a user
 func (u *UserModel) Signup(data forms.SignupUserCommand) error {
 	// Connect to the user collection
-	collection := dbConnect.Use(databaseName, COLLECTION)
+	collection := dbConnect.Use(databaseName, usercollection)
 	// Assign result to error object while saving user
 	err := collection.Insert(bson.M{
 		"name":     data.Name,
@@ -43,7 +43,7 @@ func (u *UserModel) Signup(data forms.SignupUserCommand) error {
 // GetUserByEmail handles fetching user by email
 func (u *UserModel) GetUserByEmail(email string) (user User, err error) {
 	// Connect to the user collection
-	collection := dbConnect.Use(databaseName, COLLECTION)
+	collection := dbConnect.Use(databaseName, usercollection)
 	// Assign result to error object while saving user
 	err = collection.Find(bson.M{"email": email}).One(&user)
 	return user, err
@@ -51,7 +51,7 @@ func (u *UserModel) GetUserByEmail(email string) (user User, err error) {
 
 // GetUserByID handles fetching user by id
 func (u *UserModel) GetUserByID(id string) (user User, err error) {
-	collection := dbConnect.Use(databaseName, COLLECTION)
+	collection := dbConnect.Use(databaseName, usercollection)
 
 	err = collection.Find(bson.M{"_id": id}).One(&user)
 
@@ -60,7 +60,7 @@ func (u *UserModel) GetUserByID(id string) (user User, err error) {
 
 // UpdateUserPass handles updating user password
 func (u *UserModel) UpdateUserPass(email string, password string) (err error) {
-	collection := dbConnect.Use(databaseName, COLLECTION)
+	collection := dbConnect.Use(databaseName, usercollection)
 
 	err = collection.Update(bson.M{"email": email}, bson.M{"$set": bson.M{"password": password}})
 
@@ -69,7 +69,7 @@ func (u *UserModel) UpdateUserPass(email string, password string) (err error) {
 
 // VerifyAccount handles verifying user
 func (u *UserModel) VerifyAccount(email string) (err error) {
-	collection := dbConnect.Use(databaseName, COLLECTION)
+	collection := dbConnect.Use(databaseName, usercollection)
 
 	err = collection.Update(bson.M{"email": email}, bson.M{"$set": bson.M{"is_verified": true}})
 
